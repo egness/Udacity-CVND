@@ -51,9 +51,9 @@ class NamishNet(nn.Module):
             self.dropout6 = nn.Dropout(p=dropout)
         
         # Fully connected layers
-        self.fc1 = nn.Linear(in_features=43264, out_features=1000)
-        self.fc2 = nn.Linear(in_features=1000, out_features=1000)
-        self.fc3 = nn.Linear(in_features=1000, out_features=136)
+        self.d1 = nn.Linear(in_features=43264, out_features=1000)
+        self.d2 = nn.Linear(in_features=1000, out_features=1000)
+        self.d3 = nn.Linear(in_features=1000, out_features=136)
             
         # Weights initialization
         for m in self.modules():
@@ -78,19 +78,19 @@ class NamishNet(nn.Module):
         #print("x.shape / input:", x.shape)
         
         ## Conv layers according to NamishNet definition
-        x = self.pool(F.relu(self.conv1(x)))
+        x = self.pool(self.actF(self.conv1(x)))
         x = self.dropout1(x)
         #print("C1.shape:", x.shape)        
             
-        x = self.pool(F.relu(self.conv2(x)))
+        x = self.pool(self.actF(self.conv2(x)))
         x = self.dropout2(x)
         #print("C2.shape:", x.shape)
         
-        x = self.pool(F.relu(self.conv3(x)))
+        x = self.pool(self.actF(self.conv3(x)))
         x = self.dropout3(x)
         #print("C3.shape:", x.shape)
         
-        x = self.pool(F.relu(self.conv4(x)))
+        x = self.pool(self.actF(self.conv4(x)))
         x = self.dropout4(x)
         #print("C4.shape:", x.shape)
                 
@@ -99,13 +99,13 @@ class NamishNet(nn.Module):
         #print("Flatten.shape:", x.shape)
                 
         ## Fully connected layers
-        x = F.elu(self.fc1(x))
+        x = self.actF(self.d1(x))
         x = self.dropout5(x)
                 
-        x = F.relu(self.fc2(x))
+        x = self.actF(self.d2(x))
         x = self.dropout6(x)
                 
-        x = self.fc3(x)
+        x = self.d3(x)
         
         # a modified x, having gone through all the layers of your model, should be returned
         return x
